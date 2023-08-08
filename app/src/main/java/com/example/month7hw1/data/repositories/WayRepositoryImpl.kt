@@ -1,7 +1,9 @@
 package com.example.month7hw1.data.repositories
 
 import com.example.month7hw1.data.db.database.WayDao
-import com.example.month7hw1.domain.models.WayEntity
+import com.example.month7hw1.data.db.models.WayEntity
+import com.example.month7hw1.data.mappers.mapToWayEntity
+
 import com.example.month7hw1.domain.repositories.WayRepository
 import com.example.month7hw1.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +47,7 @@ class WayRepositoryImpl @Inject constructor(private val wayDao: WayDao) : WayRep
             emit(Resource.Loading())
             try {
                 val data = wayDao.getWays()
-                emit(Resource.Success(data.))
+                emit(Resource.Success(data.mapToWayEntity()))
             } catch (e: Exception) {
                 emit(Resource.Error(e.localizedMessage as String))
             }
