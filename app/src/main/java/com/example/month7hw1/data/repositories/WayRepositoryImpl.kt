@@ -1,8 +1,6 @@
 package com.example.month7hw1.data.repositories
 
 import com.example.month7hw1.data.db.database.WayDao
-import com.example.month7hw1.data.db.models.Way
-import com.example.month7hw1.domain.mappers.mapToWayEntity
 import com.example.month7hw1.domain.models.WayEntity
 import com.example.month7hw1.domain.repositories.WayRepository
 import com.example.month7hw1.domain.util.Resource
@@ -12,7 +10,7 @@ import javax.inject.Inject
 
 class WayRepositoryImpl @Inject constructor(private val wayDao: WayDao) : WayRepository {
 
-    override suspend fun deleteWay(way: Way) :Flow<Resource<Unit>> =  flow {
+    override suspend fun deleteWay(way: WayEntity): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
         try {
             val data = wayDao.getWays()
@@ -21,7 +19,8 @@ class WayRepositoryImpl @Inject constructor(private val wayDao: WayDao) : WayRep
             emit(Resource.Error(e.localizedMessage as String))
         }
     }
-    override suspend fun updateWay(way: Way):Flow<Resource<Unit>> =  flow {
+
+    override suspend fun updateWay(way: WayEntity): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
         try {
             val data = wayDao.getWays()
@@ -31,7 +30,7 @@ class WayRepositoryImpl @Inject constructor(private val wayDao: WayDao) : WayRep
         }
     }
 
-    override suspend fun createWay(way: Way):Flow<Resource<Unit>> =  flow {
+    override suspend fun createWay(way: WayEntity): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
         try {
             val data = wayDao.getWays()
@@ -41,15 +40,15 @@ class WayRepositoryImpl @Inject constructor(private val wayDao: WayDao) : WayRep
         }
     }
 
-    override suspend fun getWays(): Flow<Resource<List<WayEntity>>> =
-        flow {
+    override suspend fun getWays(): Flow<Resource<List<WayEntity>>> {
+        return flow {
             emit(Resource.Loading())
             try {
                 val data = wayDao.getWays()
-                emit(Resource.Success(data.mapToWayEntity()))
+                emit(Resource.Success(data.))
             } catch (e: Exception) {
                 emit(Resource.Error(e.localizedMessage as String))
             }
         }
-
+    }
 }

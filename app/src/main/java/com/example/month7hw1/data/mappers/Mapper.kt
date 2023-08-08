@@ -1,9 +1,9 @@
-package com.example.month7hw1.domain.mappers
+package com.example.month7hw1.data.mappers
 
-import com.example.month7hw1.data.db.models.Way
 import com.example.month7hw1.domain.models.WayEntity
 
-fun List<Way>.mapToWayEntity()= this.map{
+
+fun List<WayEntity>.mapToWayEntity()= this.map{
     WayEntity(
         id = it.id,
         name = it.name,
