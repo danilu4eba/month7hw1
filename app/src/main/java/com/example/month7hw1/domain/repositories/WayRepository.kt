@@ -1,7 +1,5 @@
 package com.example.month7hw1.domain.repositories
 
-
-
 import com.example.month7hw1.data.db.models.WayEntity
 import com.example.month7hw1.domain.util.Resource
 import kotlinx.coroutines.flow.Flow

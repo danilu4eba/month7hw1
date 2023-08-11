@@ -12,7 +12,7 @@ import com.example.month7hw1.data.db.models.WayEntity
 interface WayDao {
 
     @Query("SELECT * FROM Way")
-    suspend fun getWays(): List<WayEntity>
+     fun getWays(): List<WayEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createWay(way: WayEntity)

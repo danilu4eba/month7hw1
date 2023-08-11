@@ -1,10 +1,11 @@
 package com.example.month7hw1.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.month7hw1.data.db.models.WayEntity
+import com.example.month7hw1.domain.useCases.CreateWayUseCase
+import com.example.month7hw1.domain.useCases.DeleteWayUseCase
 import com.example.month7hw1.domain.useCases.GetWayUseCase
-import com.example.month7hw1.domain.util.Resource
+import com.example.month7hw1.domain.useCases.UpdateUseCase
+import com.example.month7hw1.presentation.base.BaseViewModel
 import com.example.month7hw1.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,32 +14,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WayViewModel @Inject constructor(private val getWayUseCase: GetWayUseCase) : ViewModel() {
+class WayViewModel @Inject constructor(
 
-    private val _mutableStateFlow = MutableStateFlow<UiState<List<WayEntity>>>(UiState.Empty())
-    val getAllWay: StateFlow<UiState<List<WayEntity>>> = _mutableStateFlow
+    private val getWayUseCase: GetWayUseCase,
+    private val createWayUseCase: CreateWayUseCase,
+    private val updateUseCase: UpdateUseCase,
+    private val deleteWayUseCase: DeleteWayUseCase
+    ) : BaseViewModel() {
 
-    fun getAll() {
-        viewModelScope.launch {
-            getWayUseCase.getWay().collect() {
-                when (it) {
-                    is Resource.Error -> {
-                        _mutableStateFlow.value =
-                            UiState.Error((it.message ?: "some error").toString())
-                    }
+    private val _mutableStateFlowForGet = MutableStateFlow<UiState<List<WayEntity>>>(UiState.Empty())
+    val getAllWay: StateFlow<UiState<List<WayEntity>>> = _mutableStateFlowForGet
 
-                    is Resource.Success -> {
-                        _mutableStateFlow.value = UiState.Loading()
-                    }
+    private val _mutableStateFlowForCreate = MutableStateFlow<UiState<List<WayEntity>>>(UiState.Empty())
+    val createWay: StateFlow<UiState<List<WayEntity>>> = _mutableStateFlowForCreate
 
-                    is Resource.Loading -> {
-                        if (it.data != null) {
-                            _mutableStateFlow.value = UiState.Success(it.data)
-                        }
+    suspend fun getAll() {
+        getWayUseCase.getWay().collectData(_mutableStateFlowForGet )
+    }
 
-                    }
-                }
-            }
-        }
+    suspend fun createWay(way: WayEntity){
+        createWayUseCase.createWay(way).collectData(createWay)
+    }
+    suspend fun deleteWay(way:WayEntity){
+        deleteWayUseCase.deleteWay(way)
+    }
+
+    suspend fun updateWay(way:WayEntity){
+        updateUseCase.updateWay(way)
     }
 }
